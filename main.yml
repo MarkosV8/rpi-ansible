@@ -1,0 +1,14 @@
+---
+
+- hosts: raspberrypi
+  gather_facts: true
+  become: true
+  roles:
+    - { role: init, tags: 'init'}
+    - { role: geerlingguy.docker, tags: 'docker'}
+    - { role: musicbot, tags: 'musicbot'}
+    
+
+   
+
+  

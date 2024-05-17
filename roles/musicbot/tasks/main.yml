@@ -1,0 +1,44 @@
+---
+
+- name: Create directory for Musicbot
+  file:
+    path: /opt/Musicbot
+    state: directory
+
+- name: Copy config.txt
+  copy:
+    src: files/config.txt
+    dest: /opt/Musicbot
+
+- name: Copy docker-compose file
+  copy:
+    src: files/docker-compose.yml
+    dest: /opt/Musicbot
+
+- name: Install Docker SDK for Python
+  apt:
+    name: docker
+    state: present
+
+- name: Install docker-compose
+  apt:
+    name: docker-compose
+    state: present
+
+- name: Tear down existing services
+  community.docker.docker_compose:
+    project_src: /opt/Musicbot/
+    state: absent
+
+- name: Enable docker.service
+  systemd:
+    name: docker.service
+    daemon_reload: true
+    enabled: true
+
+- name: Start Docker Compose
+  community.docker.docker_compose:
+    project_src: /opt/Musicbot/
+    files:
+      - docker-compose.yml
+  register: output

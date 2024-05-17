@@ -1,0 +1,55 @@
+---
+
+- name: Update apt-get repo and cache
+  become: true
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+
+- name: Upgrade all apt packages
+  become: true
+  apt:
+    upgrade: dist
+
+- name: Install common packages
+  become: true
+  apt:
+    pkg:
+      - git
+      - vim
+      - nano
+      - python3-pip
+      - python3-docker
+
+      
+- name: Ensure dependencies are installed
+  apt:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg2
+      - software-properties-common
+    state: present
+  when: ansible_os_family == "Debian"
+
+#- name: Remove any existing Docker list file
+#  become: true
+#  file:
+#    path: /etc/apt/sources.list.d/docker.list
+  #  state: absent
+
+# - name: Remove any existing Docker GPG key
+#   become: true
+#   file:
+#     path: /etc/apt/trusted.gpg.d/docker.asc
+#     state: absent
+
+
+- name: Crontab - setup update and upgrade
+  become: true
+  cron:
+    name: "Update and upgrade"
+    minute: "0"
+    hour: "5"
+    job: "apt update -q -y && apt dist-upgrade -q -y"

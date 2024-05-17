@@ -1,0 +1,14 @@
+---
+version: "3"
+services:
+  jmusicbot:
+    image: ghcr.io/yojoshb/jmusicbot-docker
+    container_name: jmusicbot
+    environment:
+      - BOT_VERSION=latest # You can omit the environment variable if you just want to run the latest version
+    volumes:
+      - type: bind
+        source: /opt/Musicbot/config.txt
+        target: /config/config.txt
+        read_only: true
+    restart: unless-stopped
